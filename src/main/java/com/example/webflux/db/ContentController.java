@@ -19,8 +19,13 @@ public class ContentController {
         this.contentService = contentService;
     }
 
-    @PostMapping(value = {"/"})
-    public Mono<?> insertContent(@RequestBody ContentEntity contentEntity) {
+    @PostMapping(value = {"/", "/r2dbc"})
+    public Mono<?> insertContentR2dbc(@RequestBody ContentEntity contentEntity) {
         return contentService.insertContentR2dbc(contentEntity);
+    }
+
+    @PostMapping(value = {"/jpa"})
+    public Mono<?> insertContentJpa(@RequestBody ContentEntity contentEntity) {
+        return contentService.insetContentJpa(contentEntity);
     }
 }
