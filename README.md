@@ -72,3 +72,67 @@ R2dbc와 Jpa를 동시에 연동
 [ContentController](./src/main/java/com/example/webflux/db/ContentController.java) & [ContentService](./src/main/java/com/example/webflux/db/ContentService.java)
 * R2dbc insert Api 추가
 * Jdbc insert Api 추가
+
+### 4. Security 연동
+
+```
+Oauth2 Server를 사용하여 우선 JWT(Json Web Token)를 사용한 자체 로그인 구현
+Java Config
+```
+
+[application.properties](./src/main/resources/application.properties)
+* 현재 프로젝트 패키지 로깅 레벨 DEBUG 설정
+
+[build.gradle](./build.gradle)
+* spring-security-oauth2-authorization-server 추가
+* jjwt 추가
+
+[JsonWebToken](./src/main/java/com/example/webflux/security/model/JsonWebToken.java)
+* token 값을 전송 위한 model
+
+[JwtUtil](./src/main/java/com/example/webflux/security/JwtUtil.java)
+* Json Web Token을 생성 및 유효성 검사를 위한 util
+
+[AccountEntity](./src/main/java/com/example/webflux/security/entity/AccountEntity.java)
+* 계정 정보를 저장히기 위한 Entity
+* Jpa와 R2DBC 동시 대응
+* R2DBC id schema에 값이 있을때 update 동작 이슈에 따른 Persistable 상속
+
+[AccountJpaRepository](./src/main/java/com/example/webflux/security/jpa/AccountJpaRepository.java)
+* Jpa용 Respository
+
+[AccountReactiveRepository](./src/main/java/com/example/webflux/security/reactive/AccountReactiveRepository.java)
+* R2DBC용 Respository
+
+[CustomUserDetails](./src/main/java/com/example/webflux/security/CustomUserDetails.java)
+* Spring Security에서 인증된 사용자 UserDetails를 상속한 커스텀 클래스
+
+[CustomUserDetailsService](./src/main/java/com/example/webflux/security/CustomUserDetailsService.java)
+* CustomUserDeails 서비스 구현
+* blocking, non-blocking 대응 구현
+
+[JwtProvider](./src/main/java/com/example/webflux/security/JwtProvider.java)
+* Security 내 사용자 설정 관련 AuthenticationProvider 인증절차 구현
+
+[JwtWebFilter](./src/main/java/com/example/webflux/security/JwtWebFilter.java)
+* WebFilter를 사용하여 non-blocking security filter 구현
+
+[SecuriyConfig](./src/main/java/com/example/webflux/security/SecuriyConfig.java)
+* password encoder 설정
+  * Security 내 다양한 encoder 설정 가능
+  * bcrypt 암호화 사용
+* WebFlux 용 SecurityWebFilterChain 설정
+
+[AuthService](./src/main/java/com/example/webflux/security/AuthService.java)
+* 로그인 및 회원가입 서비스 구현
+
+[AuthController](./src/main/java/com/example/webflux/security/AuthController.java)
+* 로그인 및 회원가입 API 구현
+
+[ContentService](./src/main/java/com/example/webflux/db/ContentService.java)
+* findAll 추가
+
+[ContentController](./src/main/java/com/example/webflux/db/ContentController.java)
+* Slf4j 어노테이션을 사용 로그 사용
+* content등록 api 내 AuthenticationPrincipal 어노테이션을 사용하여 Authentication.getPrincipal()에 저장 된 사용자 추출 가능
+* content 전체 리스트 api 추가

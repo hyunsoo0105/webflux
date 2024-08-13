@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.webflux.db.jpa.ContentJpaRepository;
 import com.example.webflux.db.reactive.ContentReactiveRepository;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service 
@@ -31,5 +32,12 @@ public class ContentService {
     @Transactional(transactionManager = "jpaTransactionManger")
     public Mono<ContentEntity> insetContentJpa(ContentEntity contentEntity) {
         return Mono.just(contentJpaRepository.save(contentEntity));
+    }
+
+    public Flux<ContentEntity> selectAllContentR2dbc() {
+        return contentReactiveRepository.findAll();
+    }
+    public Flux<ContentEntity> selectAllContentJpa() {
+        return Flux.fromIterable(contentJpaRepository.findAll());
     }
 }
