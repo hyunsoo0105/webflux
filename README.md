@@ -136,3 +136,23 @@ Java Config
 * Slf4j 어노테이션을 사용 로그 사용
 * content등록 api 내 AuthenticationPrincipal 어노테이션을 사용하여 Authentication.getPrincipal()에 저장 된 사용자 추출 가능
 * content 전체 리스트 api 추가
+
+### 5. Error Handing
+
+```
+ControllerAdvice를 통한 Error Handing
+```
+
+[ResponseModel](./src/main/java/com/example/webflux/exception/ResponseModel.java)
+* Response 시 보낼 model
+
+[CustomResponseEntity](./src/main/java/com/example/webflux/exception/CustomResponseEntity.java)
+* ResponseEntity를 상속받아 구현
+* Enum을 통해 원하는 HttpStatus 및 data 설정
+
+[GlobalExceptionHandler](./src/main/java/com/example/webflux/exception/GlobalExceptionHandler.java)
+* RestControllerAdvice 어노테이션 사용
+* ExceptionHandler 어노테이션을 통해 에러발생시 원하는 에러 응답 가능
+
+[AuthController](./src/main/java/com/example/webflux/security/AuthController.java) & [ContentController](./src/main/java/com/example/webflux/db/ContentController.java)
+* ResponseEntity 응답 변경
